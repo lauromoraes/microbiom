@@ -127,3 +127,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Custom
+Redemicro/
+models/
+.idea/
+*.tar
+*.tar.gz
+*.tar.bz2
+*.qza
+*.fastq
+*.fasta
