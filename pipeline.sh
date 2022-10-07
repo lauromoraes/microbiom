@@ -11,7 +11,7 @@ EXPERIMENT="${EXPERIMENT%%.*}";	# Remove extension
 EXPERIMENTFOLDER="${PWD}/experiments/${EXPERIMENT}";
 PARAMS="${EXPERIMENTFOLDER}/${EXPERIMENT}.yaml"
 
-BASEURL="https://raw.githubusercontent.com/lauromoraes/microbiom/main/steps";
+BASEURL="https://raw.githubusercontent.com/lauromoraes/microbiom/main/nb-templates";
 
 # Define pipeline steps
 STEPS=(
