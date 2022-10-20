@@ -3,13 +3,13 @@
 
 # sed -i -e 's/\r$//' pipeline.sh # Correcao de command not found
 
-PARAMS=$1; # Parameters file path
+MYPARAMS=$1; # Parameters file path
 ENV=$2; # Virtual Enviroment name or source path
 
 EXPERIMENT="${1##*/}";	# Remove prefix path
 EXPERIMENT="${EXPERIMENT%%.*}";	# Remove extension
 EXPERIMENTFOLDER="${PWD}/experiments/${EXPERIMENT}";
-PARAMS="${EXPERIMENTFOLDER}/${EXPERIMENT}.yaml"
+#MYPARAMS="${EXPERIMENTFOLDER}/${EXPERIMENT}.yaml"
 
 BASEURL="https://raw.githubusercontent.com/lauromoraes/microbiom/main/nb-templates";
 
@@ -50,7 +50,7 @@ fi
 
 
 
-echo "Processing parameters from: ${PARAMS}";
+echo "Processing parameters from: ${MYPARAMS}";
 
 # Activate virtual environment with all dependences
 conda activate ${ENV};
@@ -71,7 +71,7 @@ for i in "${!STEPS[@]}"; do
 
 	# Execute notebook
 	echo ">>> Executing STEP file: ${STEPFILE} <<<";
-	papermill "${STEPFILE}" "${EXECUTEDFILE}" -f "${PARAMS}";
+	papermill "${STEPFILE}" "${EXECUTEDFILE}" -f "${MYPARAMS}";
 done
 
 # Deactivate the virtual environment
