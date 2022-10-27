@@ -53,6 +53,7 @@ fi
 echo "Processing parameters from: ${MYPARAMS}";
 
 # Activate virtual environment with all dependences
+source ~/anaconda3/etc/profile.d/conda.sh;
 conda activate ${ENV};
 
 # Execute each step
