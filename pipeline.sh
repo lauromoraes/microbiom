@@ -20,6 +20,7 @@ STEPS=(
 	"step-rarefaction-analysis"
 	"step-metataxonomy"
 	"step-diversity-analysis"
+    "step-abundance-analysis"
 	);
 
 STEPSDIR="nb-templates"
