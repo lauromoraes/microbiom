@@ -56,6 +56,7 @@ echo "Processing parameters from: ${MYPARAMS}";
 # Activate virtual environment with all dependences
 source ~/anaconda3/etc/profile.d/conda.sh;
 conda activate ${ENV};
+qiime dev refresh-cache;
 
 # Execute each step
 for i in "${!STEPS[@]}"; do
