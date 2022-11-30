@@ -15,7 +15,7 @@ BASEURL="https://raw.githubusercontent.com/lauromoraes/microbiom/main/nb-templat
 
 # Define pipeline steps
 STEPS=(
-	"step-prepare-data"cd .
+	"step-prepare-data"
 	"step-quality-control"
 	"step-rarefaction-analysis"
 	"step-metataxonomy"
