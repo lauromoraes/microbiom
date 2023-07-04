@@ -138,3 +138,5 @@ models/
 *.qza
 *.fastq
 *.fasta
+*.zip
+
