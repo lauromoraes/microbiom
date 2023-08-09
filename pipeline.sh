@@ -42,13 +42,13 @@ if ! [ -d "$EXECUTEDDIR" ]; then
   mkdir -p ${EXECUTEDDIR};
 fi
 
-# # Download utils.py file
-# if ! [ -f "${STEPSDIR}/utils.py" ]; then
-# 	echo "Downloading: ${STEPSDIR}/utils.py";
-# 	wget "${BASEURL}/utils.py" -O "${STEPSDIR}/utils.py";
-# 	cp "${BASEURL}/utils.py" "${EXECUTEDDIR}/utils.py"
-# 	cp "${BASEURL}/utils.py" "."
-# fi
+# Download utils.py file
+if ! [ -f "${STEPSDIR}/utils.py" ]; then
+  echo "Downloading: ${STEPSDIR}/utils.py";
+  wget "${BASEURL}/utils.py" -O "${STEPSDIR}/utils.py";
+  cp "${BASEURL}/utils.py" "${EXECUTEDDIR}/utils.py"
+  cp "${BASEURL}/utils.py" "."
+fi
 
 
 
