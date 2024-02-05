@@ -7,6 +7,11 @@ wget -O pipeline.sh "https://raw.githubusercontent.com/lauromoraes/microbiom/mai
 ```
 
 ```
+# Make pipeline.sh executable
+chmod +x pipeline.sh
+```
+
+```
 # Excute pipeline
 bash -i pipeline.sh params-file.yaml qiime2-conda-envname
 ```
