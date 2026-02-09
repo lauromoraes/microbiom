@@ -3,7 +3,7 @@
 MYPARAMS=$1; # Parameters file path
 ENV=$2; # Virtual Environment name or source path
 
-EXPERIMENT=$(grep 'experiment_name' ${MYPARAMS} | awk '{print $2}' | tr -d '"')
+EXPERIMENT=$(grep 'experiment_name' ${MYPARAMS} | awk '{print $2}' | tr -d "\"'")
 echo "Experiment name: ${EXPERIMENT}";
 EXPERIMENTFOLDER="${PWD}/experiments/${EXPERIMENT}";
 
