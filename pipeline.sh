@@ -1,15 +1,11 @@
 #! /bin/bash
 
-
-# sed -i -e 's/\r$//' pipeline.sh # Correcao de command not found
-
 MYPARAMS=$1; # Parameters file path
-ENV=$2; # Virtual Enviroment name or source path
+ENV=$2; # Virtual Environment name or source path
 
-EXPERIMENT="${1##*/}";	# Remove prefix path
-EXPERIMENT="${EXPERIMENT%%.*}";	# Remove extension
+EXPERIMENT=$(grep 'experiment_name' ${MYPARAMS} | awk '{print $2}' | tr -d '"')
+echo "Experiment name: ${EXPERIMENT}";
 EXPERIMENTFOLDER="${PWD}/experiments/${EXPERIMENT}";
-#MYPARAMS="${EXPERIMENTFOLDER}/${EXPERIMENT}.yaml"
 
 BASEURL="https://raw.githubusercontent.com/lauromoraes/microbiom/main/nb-templates";
 
@@ -25,7 +21,7 @@ STEPS=(
     "step-picrust2-analysis"
     );
 
-STEPSDIR="nb-templates"
+STEPSDIR="${PWD}/nb-templates"
 if ! [ -d "$STEPSDIR" ]; then
   echo "Creating directory for notebook templates: ${STEPSDIR}";
   mkdir -p ${STEPSDIR};
@@ -43,7 +39,7 @@ if ! [ -d "$EXECUTEDDIR" ]; then
   mkdir -p ${EXECUTEDDIR};
 fi
 
-# Download utils.py file
+# Download the utils.py file
 if ! [ -f "${STEPSDIR}/utils.py" ]; then
   echo "Downloading: ${STEPSDIR}/utils.py";
   wget "${BASEURL}/utils.py" -O "${STEPSDIR}/utils.py";
@@ -55,7 +51,7 @@ fi
 
 echo "Processing parameters from: ${MYPARAMS}";
 
-# Activate virtual environment with all dependences
+# Activate virtual environment with all dependencies
 conda init bash
 source ~/anaconda3/etc/profile.d/conda.sh;
 conda activate ${ENV};
@@ -69,7 +65,7 @@ for i in "${!STEPS[@]}"; do
 	STEPFILE="${STEPSDIR}/${STEPS[i]}.ipynb";
 	EXECUTEDFILE="${EXECUTEDDIR}/${STEPS[i]}-${EXPERIMENT}.ipynb";
 
-	# Download notebook if it not exists
+	# Download notebook if it does not exist
 	if ! [ -f "$STEPFILE" ]; then
 		echo "... Downloading file: ${STEPFILE} ...";
 		wget "${BASEURL}/${STEPS[i]}.ipynb" -O "${STEPSDIR}/${STEPS[i]}.ipynb";
