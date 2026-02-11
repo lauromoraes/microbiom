@@ -19,6 +19,7 @@ STEPS=(
     "step-abundance-analysis"
     "step-lefse-analysis"
     "step-picrust2-analysis"
+	"step-report"
     );
 
 STEPSDIR="${PWD}/nb-templates"
