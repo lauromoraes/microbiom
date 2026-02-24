@@ -135,8 +135,10 @@ models/
 *.tar
 *.tar.gz
 *.tar.bz2
+*.gz
 *.qza
 *.fastq
 *.fasta
+*.fa
 *.zip
 
