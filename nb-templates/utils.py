@@ -4,6 +4,8 @@
 from pathlib import Path
 import os
 import tempfile
+import pandas as pd
+import numpy as np
 
 from qiime2.plugins.feature_table.methods import filter_samples
 from qiime2.plugins.feature_table.methods import filter_seqs
