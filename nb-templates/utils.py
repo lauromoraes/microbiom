@@ -24,7 +24,7 @@ def filter_samples(metadata, tabs, reps)
 
 
 def get_direction_info(manifest_file_path):
-    """Process and gets information about fastq directions using manifest file
+    """Process and get information about FASTQ directions using the manifest file
     
     Example:
         d_type, v_type, direction = get_direction_info(manifest_file)
@@ -53,6 +53,78 @@ def get_direction_info(manifest_file_path):
     else:
         print(f'ERROR: invalid number of directions {n_directions}')
     return d_type, v_type, direction
+
+def get_deepest_taxonomic_level(taxonomy) -> int:
+    """
+    Return the deepest taxonomic level found in QIIME 2
+    FeatureData[Taxonomy] artifact.
+
+    Taxonomic levels:
+        1 = Domain
+        2 = Phylum
+        3 = Class
+        4 = Order
+        5 = Family
+        6 = Genus
+        7 = Species
+
+    Parameters
+    ----------
+    taxonomy: QIIME 2.Artifact
+        QIIME 2 FeatureData[Taxonomy] artifact.
+
+    Returns
+    -------
+    int
+        Deepest taxonomic level found.
+
+    Raises
+    ------
+    TypeError
+        If the artifact is not FeatureData[Taxonomy].
+    ValueError
+        If no valid taxonomic classification is found.
+    """
+
+    if str(taxonomy.type) != "FeatureData[Taxonomy]":
+        raise TypeError(
+            f"Expected FeatureData[Taxonomy], got {taxonomy.type}"
+        )
+
+    taxonomy_df = taxonomy.view(pd.DataFrame)
+
+    if "Taxon" not in taxonomy_df.columns:
+        raise ValueError("Taxonomy table does not contain a 'Taxon' column.")
+
+    prefixes = {
+        "d__": 1,
+        "k__": 1,  # compatibility with older classifiers
+        "p__": 2,
+        "c__": 3,
+        "o__": 4,
+        "f__": 5,
+        "g__": 6,
+        "s__": 7,
+    }
+
+    deepest_level = 0
+
+    for taxon in taxonomy_df["Taxon"].dropna():
+        for rank in str(taxon).split(";"):
+            rank = rank.strip()
+
+            for prefix, level in prefixes.items():
+                if rank.startswith(prefix):
+                    # Ignore empty classifications such as g__ or s__
+                    value = rank[len(prefix):].strip()
+
+                    if value:
+                        deepest_level = max(deepest_level, level)
+
+    if deepest_level == 0:
+        raise ValueError("No valid taxonomic levels were found.")
+
+    return deepest_level
 
 def setup_temp_environment(
     base_dir: str | Path,
