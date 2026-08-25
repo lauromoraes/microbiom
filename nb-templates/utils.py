@@ -4,6 +4,7 @@
 from pathlib import Path
 import os
 import tempfile
+import shutil
 import pandas as pd
 import numpy as np
 
@@ -166,3 +167,103 @@ def setup_temp_environment(
 
     return paths
 
+def cleanup_temp_environment(
+    base_dir: str | Path,
+    qiime_subdir: str = "qiime2",
+    joblib_subdir: str = "joblib",
+    cache_subdir: str = "qiime2-cache",
+    remove_directories: bool = False,
+    verbose: bool = True,
+) -> None:
+    """
+    Clean temporary directories created by setup_temp_environment().
+
+    This function removes the contents of the temporary directories used
+    by Python/QIIME 2, Joblib, and the QIIME 2 cache.
+
+    Parameters
+    ----------
+    base_dir : str or Path
+        Base directory containing the temporary directories.
+
+    qiime_subdir : str, default="qiime2"
+        Subdirectory used for general temporary files.
+
+    joblib_subdir : str, default="joblib"
+        Subdirectory used by Joblib for temporary memory-mapped files.
+
+    cache_subdir : str, default="qiime2-cache"
+        Subdirectory used as the QIIME 2 cache.
+
+    remove_directories : bool, default=False
+        If True, remove the temporary directories themselves.
+        If False, remove only their contents.
+
+    verbose : bool, default=True
+        Print information about the cleanup process.
+
+    Notes
+    -----
+    This function should only be called after all QIIME 2, Python, and
+    Joblib processes using these directories have finished.
+    """
+
+    base_dir = Path(base_dir).expanduser().resolve()
+
+    # Basic safety checks.
+    forbidden_paths = {
+        Path("/"),
+        Path("/tmp"),
+        Path("/var"),
+        Path("/home"),
+        Path("/mnt"),
+    }
+
+    if base_dir in forbidden_paths:
+        raise ValueError(
+            f"Refusing to clean unsafe base directory: {base_dir}"
+        )
+
+    directories = {
+        "QIIME/Python temporary files": base_dir / qiime_subdir,
+        "Joblib temporary files": base_dir / joblib_subdir,
+        "QIIME 2 cache": base_dir / cache_subdir,
+    }
+
+    for label, directory in directories.items():
+
+        directory = directory.resolve()
+
+        # Ensure the target is actually inside base_dir.
+        if directory.parent != base_dir:
+            raise ValueError(
+                f"Unsafe temporary directory detected: {directory}"
+            )
+
+        if not directory.exists():
+            if verbose:
+                print(f"[SKIP] {label}: {directory} does not exist.")
+            continue
+
+        if remove_directories:
+            shutil.rmtree(directory)
+
+            if verbose:
+                print(f"[REMOVED] {label}: {directory}")
+
+        else:
+            for item in directory.iterdir():
+
+                if item.is_dir() and not item.is_symlink():
+                    shutil.rmtree(item)
+                else:
+                    item.unlink()
+
+            if verbose:
+                print(f"[CLEANED] {label}: {directory}")
+
+    # Reset Python's cached temporary directory.
+    tempfile.tempdir = None
+
+    if verbose:
+        print("Temporary environment cleanup completed.")
