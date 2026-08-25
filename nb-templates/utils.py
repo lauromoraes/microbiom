@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
+import os
+import tempfile
+
 from qiime2.plugins.feature_table.methods import filter_samples
 from qiime2.plugins.feature_table.methods import filter_seqs
 
@@ -50,4 +54,41 @@ def get_direction_info(manifest_file_path):
         print(f'ERROR: invalid number of directions {n_directions}')
     return d_type, v_type, direction
 
+def setup_temp_environment(
+    base_dir: str | Path,
+    qiime_subdir: str = "qiime2",
+    joblib_subdir: str = "joblib",
+    cache_subdir: str = "qiime2-cache",
+    verbose: bool = True,
+) -> dict[str, Path]:
+
+    base_dir = Path(base_dir).expanduser().resolve()
+
+    tmp_dir = base_dir / qiime_subdir
+    joblib_dir = base_dir / joblib_subdir
+    cache_dir = base_dir / cache_subdir
+
+    for directory in (tmp_dir, joblib_dir, cache_dir):
+        directory.mkdir(parents=True, exist_ok=True)
+
+    os.environ["TMPDIR"] = str(tmp_dir)
+    os.environ["TMP"] = str(tmp_dir)
+    os.environ["TEMP"] = str(tmp_dir)
+    os.environ["JOBLIB_TEMP_FOLDER"] = str(joblib_dir)
+
+    tempfile.tempdir = str(tmp_dir)
+
+    paths = {
+        "tmp": tmp_dir,
+        "joblib": joblib_dir,
+        "qiime_cache": cache_dir,
+    }
+
+    if verbose:
+        print("Temporary environment configured:")
+        print(f"  TMPDIR             = {tmp_dir}")
+        print(f"  JOBLIB_TEMP_FOLDER = {joblib_dir}")
+        print(f"  QIIME cache        = {cache_dir}")
+
+    return paths
 
