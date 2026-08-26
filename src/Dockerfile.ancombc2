@@ -1,0 +1,31 @@
+FROM bioconductor/bioconductor_docker:RELEASE_3_22
+
+USER root
+
+RUN R -e 'install.packages( \
+    c("remotes", "dplyr", "tidyr", "ggplot2", "readr", "tibble"), \
+    repos = "https://cloud.r-project.org" \
+)'
+
+RUN R -e 'BiocManager::install( \
+    "phyloseq", \
+    ask = FALSE, \
+    update = FALSE \
+)'
+
+RUN R -e 'remotes::install_github( \
+    "FrederickHuangLin/ANCOMBC@RELEASE_3_22", \
+    upgrade = "never", \
+    dependencies = TRUE \
+)'
+
+RUN R -e '\
+    library(ANCOMBC); \
+    library(phyloseq); \
+    library(dplyr); \
+    library(tidyr); \
+    library(ggplot2); \
+    stopifnot(requireNamespace("ANCOMBC", quietly = TRUE)); \
+    stopifnot(exists("ancombc2", where = asNamespace("ANCOMBC"))); \
+    cat("ANCOMBC: ", as.character(packageVersion("ANCOMBC")), "\n"); \
+    cat("CVXR:    ", as.character(packageVersion("CVXR")), "\n")'
