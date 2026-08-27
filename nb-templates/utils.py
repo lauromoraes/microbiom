@@ -130,7 +130,7 @@ def get_deepest_taxonomic_level(taxonomy) -> int:
     return deepest_level
 
 def setup_temp_environment(
-    base_dir: str | Path,
+    base_dir: str | Path = DEFAULT_TEMP_DIR,
     qiime_subdir: str = "qiime2",
     joblib_subdir: str = "joblib",
     cache_subdir: str = "qiime2-cache",
@@ -168,7 +168,7 @@ def setup_temp_environment(
     return paths
 
 def cleanup_temp_environment(
-    base_dir: str | Path,
+    base_dir: str | Path = DEFAULT_TEMP_DIR,
     qiime_subdir: str = "qiime2",
     joblib_subdir: str = "joblib",
     cache_subdir: str = "qiime2-cache",
