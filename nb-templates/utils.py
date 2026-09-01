@@ -117,7 +117,7 @@ def get_deepest_taxonomic_level(taxonomy) -> int:
             rank = rank.strip()
 
             for prefix, level in prefixes.items():
-                if rank.startswith(prefix):
+                if lower(rank).startswith(prefix):
                     # Ignore empty classifications such as g__ or s__
                     value = rank[len(prefix):].strip()
 
