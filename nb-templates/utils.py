@@ -11,6 +11,8 @@ import numpy as np
 from qiime2.plugins.feature_table.methods import filter_samples
 from qiime2.plugins.feature_table.methods import filter_seqs
 
+DEFAULT_TEMP_DIR = Path("/mnt/data/tmp")
+
 def filter_samples_seqs(metadata, tabs, reps):
     # Filter FeatureTable[Frequency | RelativeFrequency | PresenceAbsence | Composition] based on Metadata sample ID values
     tabs = filter_samples(
