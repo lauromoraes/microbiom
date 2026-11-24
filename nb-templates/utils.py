@@ -13,6 +13,17 @@ from qiime2.plugins.feature_table.methods import filter_seqs
 
 DEFAULT_TEMP_DIR = Path("/mnt/data/tmp")
 
+_COMP = str.maketrans("ACGTRYSWKMBDHVN", "TGCAYRSWMKVHDBN")
+
+def revcomp(seq: str) -> str:
+    return seq.upper().translate(_COMP)[::-1]
+
+def max_ee(trunc_len: int, q: int) -> float:
+    """Erros esperados de uma read de trunc_len bases com qualidade média q."""
+    if trunc_len <= 0:      # sem truncamento fixo: usa o padrão do DADA2
+        return 2.0
+    return round(trunc_len * 10 ** (-q / 10), 2)
+
 def filter_samples_seqs(metadata, tabs, reps):
     # Filter FeatureTable[Frequency | RelativeFrequency | PresenceAbsence | Composition] based on Metadata sample ID values
     tabs = filter_samples(
